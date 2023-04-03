@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace _2DarrayAT1.Properties
+namespace _2Darray.Properties
 {
 
 
