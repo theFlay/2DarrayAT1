@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -13,6 +14,7 @@ namespace _2Darray
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     
+    public class List<List<ListEntry>>
 
     public class ListEntry : IComparable<ListEntry>
     {
@@ -31,29 +33,33 @@ namespace _2Darray
     public partial class MainWindow : Window
     {
 
-        List<List<ListEntry>> multiArray = new List<List<ListEntry>>();
+        //List<List<ListEntry>> multiArray = new List<List<ListEntry>>();
+        static int rows = 12;
+        static int columns = 4;
+        int pointer = 0;
 
         public MainWindow()
         {
             InitializeComponent();
             //remove following comment BEFORE LAUNCH to pre fill array for testing
-            TestArray();
+            //TestArray();
             Refresh();
         }
 
         //Pre fill array for testing
         #region
-                private void TestArray()
-                {
+        private void TestArray()
+        {
 
-                }
+        
+        }
         #endregion
 
         //Function for Add button EMPTY
         #region
         private void AddFun()
         {
-           
+
         }
         #endregion
 
