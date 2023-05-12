@@ -1,0 +1,73 @@
+<mxfile host="app.diagrams.net" modified="2023-04-03T02:31:23.417Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="crNPz58fiwvUVil3i8bW" version="21.1.2" type="device">
+  <diagram name="Page-1" id="Ex7GbGnkFBV3IFVJLZHN">
+    <mxGraphModel dx="1434" dy="764" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="50" width="360" height="580" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-2" value="&amp;nbsp; &amp;nbsp;Status Stip" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="150" y="600" width="360" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-3" value="Search" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="120" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-4" value="Load" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="550" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-5" value="Save" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="510" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-6" value="Delete" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="470" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-7" value="Edit" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="430" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-8" value="Sort" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="390" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-9" value="Add" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="350" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-10" value="List Box" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="350" width="230" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-11" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="280" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-12" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="240" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-13" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="200" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-14" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="160" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-15" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="120" width="240" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-17" value="Category" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="200" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-18" value="Name" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="160" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-19" value="Structure" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="240" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-20" value="Definition" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="175" y="280" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-21" value="&amp;nbsp;Window Name" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="150" y="50" width="360" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="RCTiM7QL_nMTU_JGoYlG-23" value="X" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="50" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

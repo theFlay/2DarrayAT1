@@ -1,476 +1,433 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Input;
+using WikiApplication;
 
 namespace _2Darray
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
-        // initialize the stuff
-        static int rows = 12;
-        static int columns = 4;
-        int pointer = 0;
-        string[,] multiArray = new string[rows, columns];
-
+        List<Information> Wikidata = new List<Information>(); 
+        int index; 
 
         public MainWindow()
         {
             InitializeComponent();
-            //remove following comment BEFORE LAUNCH to pre fill array for testing
-            TestArray();
-            Refresh();
+            LoadComboBox();
         }
 
-        //Pre fill array for testing
+        // checks if radio btns are valid
         #region
-                private void TestArray()
-                {
-                    multiArray[0, 0] = "Name A";
-                    multiArray[0, 1] = "Category B";
-                    multiArray[0, 2] = "Structure A";
-                    multiArray[0, 3] = "Definition A";
-
-                    multiArray[1, 0] = "Name B";
-                    multiArray[1, 1] = "Category B";
-                    multiArray[1, 2] = "Structure B";
-                    multiArray[1, 3] = "Definition B";
-
-                    multiArray[2, 0] = "Carrot C";
-                    multiArray[2, 1] = "Category C";
-                    multiArray[2, 2] = "Structure C";
-                    multiArray[2, 3] = "Definition C";
-
-                    multiArray[3, 0] = "Name C";
-                    multiArray[3, 1] = "CategoryC";
-                    multiArray[3, 2] = "Structure D";
-                    multiArray[3, 3] = "Definition D";
-
-                    pointer = 4;
-                }
-        #endregion
-
-        //Function for Add button COMPLETE
-        #region
-        private void AddFun()
+        private bool ValidRadio()
         {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(txtName.Text) && (!string.IsNullOrWhiteSpace(txtCategory.Text)))
-                {
-                    if (pointer < rows)
-                    {
-                        multiArray[pointer, 0] = txtName.Text;
-                        multiArray[pointer, 1] = txtCategory.Text;
-                        multiArray[pointer, 2] = txtStructure.Text;
-                        multiArray[pointer, 3] = txtDefiniton.Text;
-                        pointer++;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Array is full");
-                    }
-                    StatusBar("Item added");
-                }
-                else
-                {
-                    MessageBox.Show("Name and Catagory can not be null");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error on read: " + ex.Message);
-            }
-        }
-        #endregion
-        
-        //Function for Edit button COMPLETE
-        #region
-        private void EditFun()
-        {
-            int index = lstView.SelectedIndex;
-            if (index >= 0)
-            {
-                multiArray[index, 0] = txtName.Text;
-                multiArray[index, 1] = txtCategory.Text;
-                multiArray[index, 2] = txtStructure.Text;
-                multiArray[index, 3] = txtDefiniton.Text;
-                lstView.Items.Clear();
-                DisplayOutputFun();
-            }
-            StatusBar("Item Edited");
+            return rdoLinear.IsChecked == true || rdoNonLinear.IsChecked == true;
         }
         #endregion
 
-        //Function for Delete button COMPLETE
+        // Add Function
         #region
-        private void DeleteFun()
+        private void Add()
         {
-            int index = lstView.SelectedIndex;
-            if (index >= 0)
-            {
-                multiArray[index, 0] = null;
-                multiArray[index, 1] = null;
-                multiArray[index, 2] = null;
-                multiArray[index, 3] = null;
+            Information newInformation = new Information();
 
-                pointer--;
-                SortFun();
-                Refresh();
-                StatusBar("Item deleted");
+            newInformation.isLinear = rdoLinear.IsChecked == true;
+            newInformation.isLinear = rdoNonLinear.IsChecked == true;
+
+            if (ValidInputs())
+            {
+                newInformation.category = ComboCategory.SelectedItem?.ToString();
+                newInformation.name = txtName.Text;
+                newInformation.definition = txtDefiniton.Text;
+                Wikidata.Add(newInformation);
             }
             else
             {
-                MessageBox.Show("No item is selected");
+                MessageBox.Show("You are missing some information. Please fill out all fields");
             }
         }
         #endregion
 
-        //Function for Status Bar COMPLETE
+        // ComboBox on Form Load Function 
         #region
-        private void StatusBar(string msg)
-        {
-            statusBar.Items.Clear();
-            statusBar.Items.Add(msg);
-        }
-        #endregion
-
-        //Function for Clear textbox COMPLETE
-        #region
-        private void ClearFun()
-        {
-            txtName.Clear();
-            txtCategory.Clear();
-            txtStructure.Clear();
-            txtDefiniton.Clear();
-        }
-
-        #endregion
-
-        //Function for Display Data COMPLETE
-        #region
-        private void DisplayFun(int index)
-        {
-            if (index >= 0)
-            {
-                txtName.Text = multiArray[index, 0];
-                txtCategory.Text = multiArray[index, 1];
-                txtStructure.Text = multiArray[index, 2];
-                txtDefiniton.Text = multiArray[index, 3];
-            }
-
-        }
-        #endregion
-
-        //Function for Show Info COMPLETE
-        #region
-        private void DisplayOutputFun()
+        private void LoadComboBox()
         {
             try
             {
-                lstView.Items.Clear();
-                for (int x = 0; x < rows; x++)
+                string filePath = "Options.txt";
+
+                if (!File.Exists(filePath))
                 {
-                    if (multiArray[x, 0] != null)
+                    using (StreamWriter writer = File.CreateText(filePath))
                     {
-                        lstView.Items.Add("Name: " + multiArray[x, 0] + ", " + "Category: " + multiArray[x, 1]);
+                        writer.WriteLine("Array");
+                        writer.WriteLine("List");
+                        writer.WriteLine("Tree");
+                        writer.WriteLine("Graph");
+                        writer.WriteLine("Abstract");
+                        writer.WriteLine("Hash");
                     }
                 }
+
+                string[] options = File.ReadAllLines(filePath);
+                foreach (string option in options)
+                {
+                    ComboCategory.Items.Add(option);
+                }
+
+                ComboCategory.SelectedIndex = 0;
             }
-            catch (Exception ex) //this is the try catch triggering
+            catch (Exception ex)
             {
-                MessageBox.Show("Error on read: " + ex.Message);
+                MessageBox.Show($"Exception Caught: {ex.Message}");
+                Close();
             }
         }
         #endregion
 
-        //Refresh listbox COMPLETE
+        // Duplicate chgecking
         #region
-        private void Refresh()
+        private bool NameDuplicates()
         {
-            DisplayOutputFun();
-            ClearFun();
+            if (Wikidata.Exists(e => e.name.Equals(txtName.Text)))
+            {
+                Display();
+                Clear();
+                return true;
+            }
+            return false; 
         }
         #endregion
 
-        //Button functions COMPLETE
+        // Selected Radio Button
+        #region
+        private string SelectedRadioButton()
+        {
+            if (rdoLinear.IsChecked == true)
+            {
+                return "Linear Structure";
+            }
+            else if (rdoNonLinear.IsChecked == true)
+            {
+                return "Non-Linear Structure";
+            }
+            else
+            {
+                return "";
+            }
+        }
+        #endregion
+
+        // Selected RadioBUtton Index
+        #region
+        private int SelectedRadioButtonIndex()
+        {
+            if (rdoLinear.IsChecked == true)
+            {
+                index = 0;
+            }
+            else if (rdoNonLinear.IsChecked == true)
+            {
+                index = 1;
+            }
+            else
+            {
+                index = -1;
+            }
+            return index;
+        }
+        #endregion
+
+        // Call Radio Buttons
+        #region
+        private void CheckRadioButton()
+        {
+            SelectedRadioButton();
+            SelectedRadioButtonIndex();
+        }
+        #endregion
+
+        // Delete Function
+        #region
+        private void DeleteItem()
+        {
+            if (lstView.SelectedItem != null)
+            {
+                MessageBoxResult userResult = MessageBox.Show("Are you sure you want to delete this item?", "Delete", MessageBoxButton.YesNo);
+                if (userResult == MessageBoxResult.Yes)
+                {
+                    var selectedItem = lstView.SelectedItem;
+                    lstView.Items.Remove(selectedItem);
+                    Wikidata.Remove((Information)selectedItem);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select an entry to delete");
+            }
+        }
+
+        #endregion
+
+        // Edit Function
+        #region
+        private void EditItem()
+        {
+            int selectedIndex = lstView.SelectedIndex;
+
+            if (selectedIndex != -1)
+            {
+                Information dataObject = (Information)lstView.SelectedItem;
+
+                dataObject.name = txtName.Text;
+                dataObject.category = ComboCategory.SelectedItem.ToString();
+                dataObject.definition = txtDefiniton.Text;
+                dataObject.isLinear = rdoLinear.IsChecked == true;
+                dataObject.isLinear = rdoNonLinear.IsChecked == true;
+            }
+            else
+            {
+                Clear();
+            }
+        }
+        #endregion
+
+        // Sort/Display Function
+        #region
+        private void Display()
+        {
+            lstView.Items.Clear();
+            Wikidata.Sort();
+            foreach (var item in Wikidata)
+            {
+                lstView.Items.Add(item);
+            }
+        }
+        #endregion
+
+        // Binary Search Function
+        #region
+        private void BinarySearch()
+        {
+            string searchInput = txtSearch.Text;
+            int index = Wikidata.FindIndex(e => e.name.Equals(searchInput));
+
+            if (index >= 0)
+            {
+                lstView.SelectedIndex = -1;
+                Information foundEntry = Wikidata[index];
+                txtName.Text = foundEntry.name;
+                ComboCategory.SelectedItem = foundEntry.category;
+                txtDefiniton.Text = foundEntry.definition;
+                rdoLinear.IsChecked = foundEntry.isLinear;
+                rdoNonLinear.IsChecked = !foundEntry.isLinear;
+            }
+            else
+            {
+                lstView.SelectedIndex = -1;
+                MessageBox.Show("The entry you are searching for doesn't exist");
+                Clear();
+            }
+        }
+        #endregion
+
+        // Clear Function
+        #region
+        private void Clear()
+        {
+            txtName.Clear();
+            txtDefiniton.Clear();
+            txtSearch.Clear();
+            ComboCategory.SelectedItem = null;
+            rdoLinear.IsChecked = false;
+            rdoNonLinear.IsChecked = false;
+        }
+        #endregion
+
+        // Save Function
+        #region
+        private void SaveFile(List<Information> list)
+        {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                FileName = "wikiList.dat",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                using (Stream fileStream = File.Create(dialog.FileName))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(fileStream, list);
+                }
+            }
+        }
+        #endregion
+
+        // Load Function
+        #region
+        private List<Information> LoadFile()
+        {
+            List<Information> list = new List<Information>();
+
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                Filter = "Data File|*.dat"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                using (Stream fileStream = File.OpenRead(dialog.FileName))
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    list = (List<Information>)formatter.Deserialize(fileStream);
+                }
+
+                lstView.Items.Clear();
+                Wikidata.Clear();
+                foreach (Information info in list)
+                {
+                    lstView.Items.Add(info);
+                    Wikidata.Add(info);
+                }
+            }
+
+            return list;
+        }
+
+        #endregion
+
+        // Check if all input boxes are valid or not
+        #region
+        private bool ValidInputs()
+        {
+            return !string.IsNullOrEmpty(txtName.Text) &&
+                   !string.IsNullOrEmpty(txtDefiniton.Text) &&
+                   ComboCategory.SelectedIndex >= 0 &&
+                   ValidRadio();
+        }
+        #endregion
+
+        // Add Button
+        #region
+        private void addButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!NameDuplicates())
+            {
+                Add();
+                Display();
+                Clear();
+            }
+            else
+            {
+                MessageBox.Show("Found a duplicate");
+            }
+        }
+        #endregion
+
+        // Selected Entry
+        #region
+        private void lstView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Information selectedItem = (Information)lstView.SelectedItem;
+            if (selectedItem == null)
+                return;
+
+            txtName.Text = selectedItem.name;
+            txtDefiniton.Text = selectedItem.definition;
+            ComboCategory.SelectedItem = selectedItem.category;
+            rdoLinear.IsChecked = selectedItem.isLinear;
+            rdoNonLinear.IsChecked = !selectedItem.isLinear;
+        }
+        #endregion
+
+        // Delete Button
+        #region
+        private void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteItem();
+            Clear();
+            Display();
+        }
+        #endregion
+
+        // Edit Button
+        #region
+        private void editButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!NameDuplicates() && ValidInputs())
+            {
+                EditItem();
+                Clear();
+                Display();
+            }
+            else
+            {
+                MessageBox.Show("Unable to edit please try again");
+                Clear();
+                Display();
+            }
+        }
+        #endregion
+
+        // Search Button
+        #region
+        private void searchButton_Click(object sender, RoutedEventArgs e)
+        {
+            BinarySearch();
+            txtSearch.Clear();
+        }
+        #endregion
+
+        // Text Box Name double click
+        #region
+        private void txtName_doubleClick(object sender, MouseButtonEventArgs e)
+        {
+            lstView.SelectedIndex = -1;
+            Clear();
+        }
+        #endregion
+
+        //Save Click
         #region
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFun();
+            SaveFile(Wikidata);
         }
+        #endregion
 
+        //Load Click
+        #region
         private void loadButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadFun();
-            Refresh();
-        }
-
-        private void sortButton_Click(object sender, RoutedEventArgs e)
-        {
-            SortFun();
-            Refresh();
-        }
-
-        private void searchButton_Click(object sender, RoutedEventArgs e)
-        {
-            Refresh();
-            BinSearchFun();
-            txtSearch.Clear();
-        }
-
-        private void addButton_Click(object sender, RoutedEventArgs e)
-        {
-            AddFun();
-            Refresh();
-        }
-
-        private void editButton_Click(object sender, RoutedEventArgs e)
-        {
-            EditFun();
-            Refresh();
-        }
-
-        private void deleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            DeleteFun();
-            Refresh();
+            List<Information> loadedList = LoadFile();
         }
         #endregion
 
-        //Function for Sort Button COMPLETE
+        //Closing Form
         #region
-        private void SortFun()
+        private void Form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            try
-            {
-                //basic Bubblesort 
-                //outer loop
-                //from start of array [0] to end of array [array.len]
-                for (int x = 1; x < rows; x++)
-                {
-                    //inner loop
-                    //from second of array [1] to second last of array [array.len -1]
-                    for (int i = 0; i < rows - 1; i++)
-                    {
-                        //if null move to back
-                        if (string.IsNullOrEmpty(multiArray[i, 0]))
-                        {
-                            Swap(i);
-                        }
-                        // else if not null and greater then first then Swap()
-                        else if (!string.IsNullOrEmpty(multiArray[i + 1, 0]) &&
-                                 string.Compare(multiArray[i, 0], multiArray[i + 1, 0]) == 1)
-                        {
-                            Swap(i);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error on SortFun(): " + ex.Message);
-            }
-        }
+            MessageBoxResult result = MessageBox.Show("Do you want to SAVE before exitting the program?", "Exitting Program", MessageBoxButton.YesNo);
 
-        #endregion
-
-        //Function for Swapping for bubblesort COMPLETE
-        #region
-        private void Swap(int indx)
-        {
-            try
+            if (result == MessageBoxResult.Yes)
             {
-                //check if in bounds
-                if (indx >= 0 && indx < rows - 1)
-                {
-                    string temp;
-                    for (int i = 0; i < columns; i++)
-                    {
-                        //swaps spots in array
-                        temp = multiArray[indx, i];
-                        multiArray[indx, i] = multiArray[indx + 1, i];
-                        multiArray[indx + 1, i] = temp;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error on SwapFun(): " + ex.Message);
+                SaveFile(Wikidata);
             }
         }
         #endregion
 
-        //Function for Save Button COMPLETE
+        //Unused
         #region
-        private void SaveFun()
-        {
-            //SaveFile Dialog
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Binary files (*.dat)|*.dat|All files (*.*)|*.*";
-            saveFileDialog.Title = "Save binary file";
-            saveFileDialog.FileName = "definitions.dat";
-            if (saveFileDialog.ShowDialog() != true)
-            {
-                return;
-            }
-            BinaryWriter bw;
-            try
-            {
-                bw = new BinaryWriter(new FileStream("2D Array.dat", FileMode.Create));
-            }
-            catch (Exception fe)
-            {
-                MessageBox.Show(fe.Message + "\n Cannot append to file.");
-                return;
-            }
-            try
-            {
-                for (int i = 0; i < multiArray.GetLength(0); i++)
-                {
-                    //dont save null values
-                    if (multiArray[i, 0] != null)
-                    {
-                        bw.Write(multiArray[i, 0]);
-                        bw.Write(multiArray[i, 1]);
-                        bw.Write(multiArray[i, 2]);
-                        bw.Write(multiArray[i, 3]);
-                    }
-                }
-            }
-            catch (Exception fe)
-            {
-                MessageBox.Show(fe.Message + "\n Cannot write data to file.");
-                return;
-            }
-            MessageBox.Show("Saved successfully");
-            StatusBar("File saved successfully");
-            bw.Close();
-        }
-        #endregion
-
-        //Function for Load Button COMPLETE
-        #region
-        private void LoadFun()
-        {
-            //LoadFile Dialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Binary files (*.dat)|*.dat|All files (*.*)|*.*";
-            openFileDialog.Title = "Select binary file";
-            openFileDialog.FileName = "definitions.dat";
-            if (openFileDialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            BinaryReader reader;
-            try
-            {
-                reader = new BinaryReader(new FileStream(openFileDialog.FileName, FileMode.Open));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error on load: " + ex.Message);
-                return;
-            }
-            lstView.Items.Clear();
-
-            int row = 0;
-            while (reader.BaseStream.Position != reader.BaseStream.Length)
-            {
-                try
-                {
-                    multiArray[row, 0] = reader.ReadString();
-                    multiArray[row, 1] = reader.ReadString();
-                    multiArray[row, 2] = reader.ReadString();
-                    multiArray[row, 3] = reader.ReadString();
-
-                    lstView.Items.Add("Name: " + multiArray[row, 0] + ", " + "Category: " + multiArray[row, 1]);
-                    row++;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error on read: " + ex.Message);
-                    break;
-                }
-            }
-            StatusBar("File Opened");
-
-            //big important
-            reader.Close();
-
-
-        }
-        #endregion
-
-        //Function for Bin Search COMPLETE
-        #region
-        private void BinSearchFun()
-        {
-            try
-            {
-                SortFun();
-                Refresh();
-                string x = txtSearch.Text;
-                int upBound = pointer - 1;
-                int lowBound = 0;
-                int found = -1;
-
-                //loop while until end of array
-                while (lowBound <= upBound)
-                {
-                    //finds the mid point and compares to search index
-                    int midpoint = lowBound + (upBound - lowBound) / 2;
-                    int result = x.CompareTo(multiArray[midpoint, 0]);
-
-                    //looks through array
-                    if (result == 0)
-                    {
-                        found = midpoint;
-                        break;
-                    }
-                    else if (result > 0)
-                    {
-                        lowBound = midpoint + 1;
-                    }
-                    else
-                    {
-                        upBound = midpoint - 1;
-                    }
-                    //prints if found or not
-                }
-                if (found == -1)
-                {
-                    MessageBox.Show("The value is NOT present");
-                }
-                else
-                {
-                    MessageBox.Show($"The value is present at index {found}, Name: {multiArray[found, 0]}, Category: {multiArray[found, 1]}");
-                    lstView.SelectedIndex = found;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error on read: " + ex.Message);
-            }
-        }
-        #endregion
-
-        //Text boxes changed
-        #region
-        private void txtStructure_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void txtCategory_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
@@ -480,23 +437,26 @@ namespace _2Darray
 
         }
 
-        private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-        #endregion
-
-        //Displays selected item in ListView in the text boxes
-        #region
-        private void lstView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            DisplayFun(lstView.SelectedIndex);
-        }
-        #endregion
-
         private void txtDefiniton_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
+
+        private void rdoNonLinear_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void rdoLinear_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+        #endregion
+
     }
+
 }

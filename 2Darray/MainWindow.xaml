@@ -17,8 +17,7 @@
 
         <TextBox x:Name="txtSearch"     HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Width="250" TextChanged="txtSearch_TextChanged" />
         <TextBox x:Name="txtName"       HorizontalAlignment="Left" Margin="90,50,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Width="250" TextChanged="txtName_TextChanged" />
-        <TextBox x:Name="txtCategory"   HorizontalAlignment="Left" Margin="90,90,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Width="250" TextChanged="txtCategory_TextChanged" />
-        <TextBox x:Name="txtStructure"  HorizontalAlignment="Left" Margin="90,130,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Width="250" TextChanged="txtStructure_TextChanged" />
+        <ComboBox x:Name="ComboCategory"   HorizontalAlignment="Left" Margin="90,90,0,0" VerticalAlignment="Top" Width="250" />
         <TextBox x:Name="txtDefiniton"  HorizontalAlignment="Left" Margin="90,170,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Width="250" TextChanged="txtDefiniton_TextChanged" />
 
         <Button x:Name="searchButton" Margin="20,10,0,0" Content="Search" HorizontalAlignment="Left" VerticalAlignment="Top" Width="65" Click="searchButton_Click"/>
@@ -26,12 +25,16 @@
         <Button x:Name="editButton"   Margin="264,303,0,0" Content="Edit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Click="editButton_Click"/>
 
         <Button x:Name="deleteButton" Margin="264,341,0,0" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="deleteButton_Click"/>
-        <Button x:Name="sortButton"   Margin="264,261,0,0" Content="Sort" HorizontalAlignment="Left" VerticalAlignment="Top" Width="74" Click="sortButton_Click"/>
         <Button x:Name="loadButton"   Margin="265,410,0,0" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="loadButton_Click"/>
         <Button x:Name="saveButton"   Margin="265,375,0,0" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="saveButton_Click"/>
 
         <ListView x:Name="lstView" Margin="20,214,123,56" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="lstView_SelectionChanged"/>
         <StatusBar x:Name="statusBar" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></StatusBar>
+
+        <StackPanel Margin="90,126,144,50" Orientation="Vertical">
+            <RadioButton x:Name="rdoLinear" Content="Linear Structure" GroupName="Structures" Checked="rdoLinear_Checked"/>
+            <RadioButton x:Name="rdoNonLinear" Content="Non-Linear Structure" GroupName="Structures" Checked="rdoNonLinear_Checked"/>
+        </StackPanel>
 
     </Grid>
 </Window>
