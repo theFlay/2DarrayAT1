@@ -35,6 +35,7 @@
             <RadioButton x:Name="rdoLinear" Content="Linear Structure" GroupName="Structures" Checked="rdoLinear_Checked"/>
             <RadioButton x:Name="rdoNonLinear" Content="Non-Linear Structure" GroupName="Structures" Checked="rdoNonLinear_Checked"/>
         </StackPanel>
+        <StatusBar x:Name="StatusBar1" Margin="0,466,0,0"/>
 
     </Grid>
 </Window>

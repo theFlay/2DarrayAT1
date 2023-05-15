@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WikiApplication;
 using static System.Net.Mime.MediaTypeNames;
@@ -22,6 +23,7 @@ namespace _2Darray
         {
             InitializeComponent();
             LoadComboBox();
+            StatusBar("Waiting");
         }
 
         // checks if radio btns are valid
@@ -29,6 +31,15 @@ namespace _2Darray
         private bool ValidRadio()
         {
             return rdoLinear.IsChecked == true || rdoNonLinear.IsChecked == true;
+        }
+        #endregion
+
+        //StatusBar
+        #region
+        private void StatusBar(string msg)
+        {
+            statusBar.Items.Clear();
+            statusBar.Items.Add(msg);
         }
         #endregion
 
@@ -47,10 +58,12 @@ namespace _2Darray
                 newInformation.name = txtName.Text;
                 newInformation.definition = txtDefiniton.Text;
                 Wikidata.Add(newInformation);
+                StatusBar("Added");
             }
             else
             {
                 MessageBox.Show("Missing feilds please fill all fields.");
+                StatusBar("Missing Info");
             }
         }
         #endregion
@@ -166,11 +179,13 @@ namespace _2Darray
                     var selectedItem = lstView.SelectedItem;
                     lstView.Items.Remove(selectedItem);
                     Wikidata.Remove((Information)selectedItem);
+                    StatusBar("Deleted");
                 }
             }
             else
             {
                 MessageBox.Show("Please select an entry to delete");
+                StatusBar("Try Again");
             }
         }
 
@@ -191,10 +206,12 @@ namespace _2Darray
                 dataObject.definition = txtDefiniton.Text;
                 dataObject.isLinear = rdoLinear.IsChecked == true;
                 dataObject.isLinear = rdoNonLinear.IsChecked == true;
+                StatusBar("Item Edited");
             }
             else
             {
                 Clear();
+                StatusBar("Waiting");
             }
         }
         #endregion
@@ -232,11 +249,13 @@ namespace _2Darray
                 txtDefiniton.Text = foundEntry.definition;
                 rdoLinear.IsChecked = foundEntry.isLinear;
                 rdoNonLinear.IsChecked = !foundEntry.isLinear;
+                StatusBar("Item found");
             }
             else
             {
                 lstView.SelectedIndex = -1;
                 MessageBox.Show("The entry you are searching for doesn't exist");
+                StatusBar("Item not found");
                 Clear();
             }
         }
@@ -273,12 +292,12 @@ namespace _2Darray
                     formatter.Serialize(fileStream, list);
                 }
             }
+            StatusBar("Saved");
         }
         #endregion
 
         // Load Function
         #region
-
         private void LoadFile()
         {
             OpenFileDialog dialog = new OpenFileDialog
@@ -303,6 +322,7 @@ namespace _2Darray
                     }
                 }
             }
+            StatusBar("Loaded");
         }
 
 
