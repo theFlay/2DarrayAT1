@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WikiApplication;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace _2Darray
 {
@@ -38,9 +39,9 @@ namespace _2Darray
             Information newInformation = new Information();
 
             newInformation.isLinear = rdoLinear.IsChecked == true;
-            newInformation.isLinear = rdoNonLinear.IsChecked == true;
+            //newInformation.isLinear = rdoNonLinear.IsChecked == true;
 
-            if (ValidInputs())
+            if (ValidName())
             {
                 newInformation.category = ComboCategory.SelectedItem?.ToString();
                 newInformation.name = txtName.Text;
@@ -49,7 +50,7 @@ namespace _2Darray
             }
             else
             {
-                MessageBox.Show("You are missing some information. Please fill out all fields");
+                MessageBox.Show("Missing feilds please fill all fields.");
             }
         }
         #endregion
@@ -211,12 +212,16 @@ namespace _2Darray
         }
         #endregion
 
+
         // Binary Search Function
         #region
         private void BinarySearch()
         {
             string searchInput = txtSearch.Text;
-            int index = Wikidata.FindIndex(e => e.name.Equals(searchInput));
+
+            Wikidata.Sort((x, y) => string.Compare(x.name, y.name));
+            int index = Wikidata.BinarySearch(new Information { name = searchInput },
+                Comparer<Information>.Create((x, y) => string.Compare(x.name, y.name)));
 
             if (index >= 0)
             {
@@ -273,10 +278,9 @@ namespace _2Darray
 
         // Load Function
         #region
-        private List<Information> LoadFile()
-        {
-            List<Information> list = new List<Information>();
 
+        private void LoadFile()
+        {
             OpenFileDialog dialog = new OpenFileDialog
             {
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
@@ -288,31 +292,33 @@ namespace _2Darray
                 using (Stream fileStream = File.OpenRead(dialog.FileName))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    list = (List<Information>)formatter.Deserialize(fileStream);
-                }
+                    List<Information> loadedList = (List<Information>)formatter.Deserialize(fileStream);
 
-                lstView.Items.Clear();
-                Wikidata.Clear();
-                foreach (Information info in list)
-                {
-                    lstView.Items.Add(info);
-                    Wikidata.Add(info);
+                    Wikidata.Clear();
+                    lstView.Items.Clear();
+                    foreach (Information info in loadedList)
+                    {
+                        Wikidata.Add(info);
+                        lstView.Items.Add(info);
+                    }
                 }
             }
-
-            return list;
         }
+
 
         #endregion
 
         // Check if all input boxes are valid or not
         #region
-        private bool ValidInputs()
+        private bool ValidName()
         {
-            return !string.IsNullOrEmpty(txtName.Text) &&
-                   !string.IsNullOrEmpty(txtDefiniton.Text) &&
-                   ComboCategory.SelectedIndex >= 0 &&
-                   ValidRadio();
+            Wikidata.Exists(e => e.name.Equals(txtName.Text));
+            {
+                return  !string.IsNullOrEmpty(txtName.Text) &&
+                        !string.IsNullOrEmpty(txtDefiniton.Text) &&
+                        ComboCategory.SelectedIndex >= 0 &&
+                        ValidRadio();
+            }
         }
         #endregion
 
@@ -363,7 +369,7 @@ namespace _2Darray
         #region
         private void editButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!NameDuplicates() && ValidInputs())
+            if (!NameDuplicates() && ValidName())
             {
                 EditItem();
                 Clear();
@@ -408,7 +414,7 @@ namespace _2Darray
         #region
         private void loadButton_Click(object sender, RoutedEventArgs e)
         {
-            List<Information> loadedList = LoadFile();
+            LoadFile();
         }
         #endregion
 
@@ -416,7 +422,7 @@ namespace _2Darray
         #region
         private void Form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Do you want to SAVE before exitting the program?", "Exitting Program", MessageBoxButton.YesNo);
+            MessageBoxResult result = MessageBox.Show("Do you want to SAVE before exitting.?", "Exitting Program", MessageBoxButton.YesNo);
 
             if (result == MessageBoxResult.Yes)
             {
