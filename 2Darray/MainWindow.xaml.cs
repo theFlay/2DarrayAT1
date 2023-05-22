@@ -2,14 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WikiApplication;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace _2Darray
 {
@@ -22,6 +19,7 @@ namespace _2Darray
         public MainWindow()
         {
             InitializeComponent();
+            Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
             LoadComboBox();
             StatusBar("Waiting");
         }
@@ -49,7 +47,8 @@ namespace _2Darray
         {
             Information newInformation = new Information();
 
-            newInformation.isLinear = rdoLinear.IsChecked == true;
+            CheckRadioButton();
+            //newInformation.isLinear = rdoLinear.IsChecked == true;
             //newInformation.isLinear = rdoNonLinear.IsChecked == true;
 
             if (ValidName())
@@ -105,7 +104,7 @@ namespace _2Darray
         }
         #endregion
 
-        // Duplicate chgecking
+        // Duplicate checking
         #region
         private bool NameDuplicates()
         {
@@ -144,11 +143,11 @@ namespace _2Darray
         {
             if (rdoLinear.IsChecked == true)
             {
-                index = 0;
+                index = 1;
             }
             else if (rdoNonLinear.IsChecked == true)
             {
-                index = 1;
+                index = 0;
             }
             else
             {
@@ -228,7 +227,6 @@ namespace _2Darray
             }
         }
         #endregion
-
 
         // Binary Search Function
         #region
@@ -370,8 +368,8 @@ namespace _2Darray
             txtName.Text = selectedItem.name;
             txtDefiniton.Text = selectedItem.definition;
             ComboCategory.SelectedItem = selectedItem.category;
-            rdoLinear.IsChecked = selectedItem.isLinear;
-            rdoNonLinear.IsChecked = !selectedItem.isLinear;
+            rdoLinear.IsChecked = !selectedItem.isLinear;
+            rdoNonLinear.IsChecked = selectedItem.isLinear;
         }
         #endregion
 
@@ -440,15 +438,15 @@ namespace _2Darray
 
         //Closing Form
         #region
-        private void Form_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Do you want to SAVE before exitting.?", "Exitting Program", MessageBoxButton.YesNo);
-
-            if (result == MessageBoxResult.Yes)
+            if (MessageBox.Show("Do you want to save first?", "CLOSING", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
+                e.Cancel = true;
                 SaveFile(Wikidata);
             }
         }
+        
         #endregion
 
         //Unused
@@ -484,5 +482,4 @@ namespace _2Darray
         #endregion
 
     }
-
 }
